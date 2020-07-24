@@ -16,10 +16,8 @@
 
 3. Visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-## App Generation
+## Endpoints
 
-This app was generated using:
-
-```sh
-mix phx.new live_view_studio --live
-```
+Path  | Description
+------------- | -------------
+[`localhost:4000/light`](http://localhost:4000/light)  | The light that is controlled by buttons
