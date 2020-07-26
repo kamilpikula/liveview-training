@@ -2,6 +2,7 @@ defmodule LiveViewStudioWeb.LicenseLive do
   use LiveViewStudioWeb, :live_view
 
   import LiveViewStudio.Licences, only: [calculate: 1]
+  import Inflex, only: [inflect: 2]
   import Number.Currency, only: [number_to_currency: 2]
 
   def mount(_params, _session, socket) do
@@ -27,7 +28,7 @@ defmodule LiveViewStudioWeb.LicenseLive do
             <img src="images/license.svg">
             <span>
               Your license is currently for
-              <strong><%= @seats %></strong> seats.
+              <strong><%= @seats %></strong> <%= inflect("seat", @seats) %>.
             </span>
           </div>
           <form phx-change="update">
