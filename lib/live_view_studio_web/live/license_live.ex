@@ -6,8 +6,32 @@ defmodule LiveViewStudioWeb.LicenseLive do
   import Number.Currency, only: [number_to_currency: 2]
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, seats: 2, amount: calculate(2))
+    if connected?(socket) do
+      :timer.send_interval(1000, self(), :tick)
+    end
+
+    expiration_time = Timex.shift(Timex.now(), hours: 1)
+
+    socket = assign(socket,
+      seats: 2,
+      amount: calculate(2),
+      expiration_time: expiration_time,
+      time_remaining: time_remaining(expiration_time)
+      )
     {:ok, socket}
+  end
+
+  defp time_remaining(expiration_time) do
+    Timex.Interval.new(from: Timex.now(), until: expiration_time)
+    |> Timex.Interval.duration(:seconds)
+    |> Timex.Duration.from_seconds()
+    |> Timex.format_duration(:humanized)
+  end
+
+  def handle_info(:tick, socket) do
+    expiration_time = socket.assigns.expiration_time
+    socket = assign(socket, time_remaining: time_remaining(expiration_time))
+    {:noreply, socket}
   end
 
   def handle_event("update", %{"seats" => seats}, socket) do
@@ -24,6 +48,9 @@ defmodule LiveViewStudioWeb.LicenseLive do
     <div id="license">
       <div class="card">
         <div class="content">
+        <p class="m-4 font-semibold text-indigo-800">
+          <%= @time_remaining %> left to save 20%
+        </p>
           <div class="seats">
             <img src="images/license.svg">
             <span>

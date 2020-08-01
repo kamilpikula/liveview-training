@@ -48,8 +48,11 @@ defmodule LiveViewStudio.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:faker, "~> 0.13"},
+      #Currency
       {:number, "~> 1.0"},
-      {:inflex, "~> 2.0.0"}
+      # Pluralize library
+      {:inflex, "~> 2.0.0"},
+      {:timex, "~> 3.6"}
     ]
   end
 
