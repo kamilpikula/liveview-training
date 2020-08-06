@@ -7,10 +7,41 @@ defmodule LiveViewStudioWeb.SearchLive do
     socket =
       assign(socket,
         zip: "",
-        stores: []
+        stores: [],
+        loading: false
       )
 
     {:ok, socket}
+  end
+
+  def handle_event("zip-search", %{"zip" => zip}, socket) do
+    send(self(), {:run_zip_search, zip})
+
+    socket = assign(socket,
+      zip: zip,
+      stores: [],
+      loading: true
+    )
+    {:noreply, socket}
+  end
+
+  def handle_info({:run_zip_search, zip}, socket) do
+    case Stores.search_by_zip(zip) do
+     [] ->
+        socket =
+          socket
+          |> put_flash(:info, "No stores matching for #{zip}")
+          |> assign(stores: [], loading: false)
+
+        {:noreply, socket}
+
+      stores ->
+        socket =
+          socket
+          |> clear_flash()
+          |> assign(stores: stores, loading: false)
+        {:noreply, socket}
+    end
   end
 
   def render(assigns) do
@@ -21,12 +52,20 @@ defmodule LiveViewStudioWeb.SearchLive do
       <form phx-submit="zip-search">
         <input type="text" name="zip" value="<%= @zip %>"
                placeholder="Zip Code"
-               autofocus autocomplete="off" />
+               autofocus autocomplete="off"
+               <%= if @loading, do: "readonly" %> >
 
         <button type="submit">
           <img src="images/search.svg">
         </button>
       </form>
+
+      <%= if @loading do %>
+        <div class="loader">
+          Loading...
+        </div>
+      <% end %>
+
 
       <div class="stores">
         <ul>
