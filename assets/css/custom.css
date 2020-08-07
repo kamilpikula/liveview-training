@@ -183,7 +183,7 @@ ul.examples {
     @apply inline-flex items-center px-3 py-1 rounded-md text-xs font-medium leading-5 bg-red-200 text-red-800 rounded-full;
   }
 
-  .stores {
+  .stores, .flights {
     @apply mt-8 bg-white shadow overflow-hidden rounded-md;
 
     li {
@@ -192,19 +192,27 @@ ul.examples {
       .first-line {
         @apply flex items-center justify-between;
 
-        .name {
+        .name, .number {
           @apply text-lg leading-5 font-medium text-indigo-600 truncate;
         }
 
         .status {
           @apply ml-2 flex-shrink-0 flex;
         }
+
+        .origin-destination {
+          @apply mt-0 flex items-center text-base leading-5 text-indigo-600;
+
+          img {
+            @apply flex-shrink-0 mr-1 h-5 w-5;
+          }
+        }
       }
 
       .second-line {
         @apply mt-2 flex justify-between;
 
-        .street {
+        .street, .departs {
           @apply mt-0 flex items-center text-base leading-5 text-cool-gray-400;
 
           img {
@@ -212,8 +220,8 @@ ul.examples {
           }
         }
 
-        .phone_number {
-          @apply mt-0 flex items-center text-sm leading-5 text-cool-gray-400;
+        .phone_number, .arrives {
+          @apply mt-0 flex items-center text-base leading-5 text-cool-gray-400;
 
           img {
             @apply flex-shrink-0 mr-2 h-5 w-5;

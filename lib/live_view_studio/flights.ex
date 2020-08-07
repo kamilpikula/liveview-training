@@ -1,4 +1,5 @@
 defmodule LiveViewStudio.Flights do
+  use Timex
 
   def search_by_number(number) do
     list_flights()
@@ -8,6 +9,10 @@ defmodule LiveViewStudio.Flights do
   def search_by_airport(airport) do
     list_flights()
     |> Enum.filter(&(&1.origin == airport || &1.destination == airport))
+  end
+
+  def format_time(time) do
+    Timex.format!(time, "%b %d at %H:%M", :strftime)
   end
 
   def list_flights do
