@@ -105,7 +105,7 @@ defmodule LiveViewStudioWeb.AutocompleteLive do
              placeholder="City"
              autocomplete="off"
              list="matches"
-             phx-debounce="1000"
+             phx-debounce="250"
              <%= if @loading, do: "readonly" %> >
 
       <button type="submit">
