@@ -1,5 +1,6 @@
 defmodule LiveViewStudio.Flights do
   use Timex
+  import String, only: [upcase: 1]
 
   def search_by_number(number) do
     list_flights()
@@ -8,7 +9,7 @@ defmodule LiveViewStudio.Flights do
 
   def search_by_airport(airport) do
     list_flights()
-    |> Enum.filter(&(&1.origin == airport || &1.destination == airport))
+    |> Enum.filter(&(&1.origin == upcase(airport) || &1.destination == upcase(airport)))
   end
 
   def format_time(time) do

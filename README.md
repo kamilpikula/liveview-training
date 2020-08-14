@@ -25,3 +25,4 @@ Path  | Description
 [`localhost:4000/sales-dashboard`](http://localhost:4000/sales-dashboard)  | Dashboard displaing sales statistics
 [`localhost:4000/search`](http://localhost:4000/sales-dashboard)  | Search shops
 [`localhost:4000/flights`](http://localhost:4000/flights)  | Search flights
+[`localhost:4000/autocomplete`](http://localhost:4000/flights)  | Live autocomplete cities with shops
