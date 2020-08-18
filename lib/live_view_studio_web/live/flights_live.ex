@@ -1,13 +1,15 @@
 defmodule LiveViewStudioWeb.FlightsLive do
   use LiveViewStudioWeb, :live_view
 
-  alias LiveViewStudio.Flights
+  alias LiveViewStudio.{Airports, Flights}
 
   def mount(_params, _session, socket) do
     socket =
       assign(socket,
         number: "",
+        code: "",
         flights: [],
+        matches: [],
         loading: false
       )
 
@@ -25,6 +27,27 @@ defmodule LiveViewStudioWeb.FlightsLive do
       )
     {:noreply, socket}
   end
+
+  def handle_event("airport-code-search", %{"code" => code}, socket) do
+    send(self(), {:run_airport_code_search, code})
+
+    socket =
+      assign(socket,
+        code: code,
+        flights: [],
+        loading: true
+      )
+    {:noreply, socket}
+  end
+
+  def handle_event("suggestion-airport", %{"code" => prefix}, socket) do
+    socket =
+      assign(socket,
+        matches: Airports.suggest(prefix),
+        loading: false
+      )
+    {:noreply, socket}
+  end
   def handle_info({:run_number_flight_search, number}, socket) do
     :timer.sleep(1000)
     case Flights.search_by_number(number) do
@@ -32,6 +55,26 @@ defmodule LiveViewStudioWeb.FlightsLive do
           socket =
             socket
             |> put_flash(:info, "No find your flight number")
+            |> assign(flights: [], loading: false)
+
+          {:noreply, socket}
+      flights ->
+          socket =
+            socket
+            |> clear_flash()
+            |> assign(flights: flights, loading: false)
+
+          {:noreply, socket}
+    end
+  end
+
+  def handle_info({:run_airport_code_search, code}, socket) do
+    :timer.sleep(1000)
+    case Flights.search_by_airport(code) do
+      [] ->
+          socket =
+            socket
+            |> put_flash(:info, "No find your airport code")
             |> assign(flights: [], loading: false)
 
           {:noreply, socket}
@@ -57,6 +100,27 @@ defmodule LiveViewStudioWeb.FlightsLive do
           <img src="images/search.svg">
         </button>
       </form>
+
+      <form phx-submit="airport-code-search" phx-change="suggestion-airport">
+        <input type="text"
+               name="code"
+               value="<%= @code %>"
+               placeholder="Airport code"
+               autocomplete="off"
+               list="matches"
+               phx-debounce="250"
+               <%= if @loading, do: "readonly" %>>
+        <button type="submit">
+          <img src="images/search.svg">
+        </button>
+      </form>
+
+      <datalist id="matches">
+        <%= for match <- @matches do %>
+          <option value="<%= match %>"><%= match %></option>
+        <% end %>
+      </datalist>
+
       <%= if @loading do %>
         <div class="loader">Loading...</div>
       <% end %>
