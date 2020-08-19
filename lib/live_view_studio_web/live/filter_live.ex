@@ -11,13 +11,54 @@ defmodule LiveViewStudioWeb.FilterLive do
         prices: []
 
       )
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [boats: []]}
+  end
+
+  def handle_event("filter", %{"type" => type, "prices" => prices}, socket) do
+    params = [type: type, prices: prices]
+    boats = Boats.list_boats(params)
+    socket = assign(socket, params ++ [boats: boats])
+
+    {:noreply, socket}
+  end
+
+  defp type_options do
+    [
+      "All Types": "",
+      Fishing: "fishing",
+      Sporting: "sporting",
+      Sailing: "sailing"
+    ]
+  end
+
+  defp price_checkbox(assigns) do
+    ~L"""
+    <input type="checkbox" id="<%= @price %>"
+           name="prices[]" value="<%= @price %>"
+          <%= if @checked, do: "checked" %> >
+    <label for="<%= @price %>"><%= @price %></label>
+    """
   end
 
   def render(assigns) do
     ~L"""
       <h1>Daily Boat Rentals</h1>
       <div id="filter">
+        <form phx-change="filter">
+          <div class="filters">
+            <select name="type">
+              <%= options_for_select(type_options(), @type) %>
+            </select>
+            <div class="prices">
+              <input type="hidden" name="prices[]" value="">
+              <%= for price <- ["$", "$$", "$$$"] do %>
+                <%= price_checkbox(%{price: price, checked: price in @prices}) %>
+              <% end %>
+
+            </div>
+          </div>
+        </form>
+
         <div class="boats">
           <%= for boat <- @boats do %>
             <div class="card">
