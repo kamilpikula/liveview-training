@@ -39,6 +39,8 @@ defmodule LiveViewStudioWeb.FilterLive do
   end
 
   defp price_checkbox(assigns) do
+    assigns = Enum.into(assigns, %{})
+
     ~L"""
     <input type="checkbox" id="<%= @price %>"
            name="prices[]" value="<%= @price %>"

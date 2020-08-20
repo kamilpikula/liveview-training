@@ -49,6 +49,20 @@ defmodule LiveViewStudioWeb.LightLive do
     {:noreply, socket}
   end
 
+  defp temps() do
+    [3000, 4000, 5000]
+  end
+
+  defp temp_radio_buttons(assigns) do
+    assigns = Enum.into(assigns, %{})
+
+    ~L"""
+      <input type="radio" id="<%= @temperature %>" name="temp" value="<%= @temperature %>"
+        <%= if @checked, do: "checked" %> />
+      <label for="<%= @temperature %>"><%= @temperature %></label>
+    """
+  end
+
   def render(assigns) do
     ~L"""
     <h1>Front Light</h1>
@@ -87,18 +101,10 @@ defmodule LiveViewStudioWeb.LightLive do
 
       <form phx-change="change-temp">
         <h2>Change color of meter</h2>
+        <%= for temp <- temps() do %>
+          <%= temp_radio_buttons(%{temperature: temp, checked: temp == @temp}) %>
+        <% end %>
 
-        <input type="radio" id="3000" name="temp" value="3000"
-          <%= if 3000 == @temp, do: "checked" %> />
-        <label for="3000">3000</label>
-
-        <input type="radio" id="4000" name="temp" value="4000"
-          <%= if 4000 == @temp, do: "checked" %> />
-        <label for="4000">4000</label>
-
-        <input type="radio" id="5000" name="temp" value="5000"
-          <%= if 5000 == @temp, do: "checked" %> />
-        <label for="5000">5000</label>
       </form>
 
     </div>
