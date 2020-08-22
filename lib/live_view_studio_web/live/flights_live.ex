@@ -3,6 +3,12 @@ defmodule LiveViewStudioWeb.FlightsLive do
 
   alias LiveViewStudio.{Airports, Flights}
 
+  use Timex
+
+  defp format_time(time) do
+    Timex.format!(time, "%b %d at %H:%M", :strftime)
+  end
+
   def mount(_params, _session, socket) do
     socket =
       assign(socket,
@@ -141,10 +147,10 @@ defmodule LiveViewStudioWeb.FlightsLive do
               </div>
               <div class="second-line">
                 <div class="departs">
-                  Departs: <%= Flights.format_time(flight.departure_time) %>
+                  Departs: <%= format_time(flight.departure_time) %>
                 </div>
                 <div class="arrives">
-                  Arrives: <%= Flights.format_time(flight.arrival_time) %>
+                  Arrives: <%= format_time(flight.arrival_time) %>
                 </div>
               </div>
             </li>
