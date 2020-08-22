@@ -1,80 +1,121 @@
 defmodule LiveViewStudio.Stores do
-  def search_by_zip(zip) do
-    :timer.sleep(1000)
-    list_stores()
-    |> Enum.filter(&(&1.zip == zip))
-  end
+  @moduledoc """
+  The Stores context.
+  """
 
-  def search_by_city(city) do
-    list_stores()
-    |> Enum.filter(&(&1.city == city))
-  end
+  import Ecto.Query, warn: false
+  alias LiveViewStudio.Repo
 
+  alias LiveViewStudio.Stores.Store
+
+  @doc """
+  Returns the list of stores.
+
+  ## Examples
+
+      iex> list_stores()
+      [%Store{}, ...]
+
+  """
   def list_stores do
-    [
-      %{
-        name: "Downtown Helena",
-        street: "312 Montana Avenue",
-        phone_number: "406-555-0100",
-        city: "Helena, MT",
-        zip: "59602",
-        open: true,
-        hours: "8am - 10pm M-F"
-      },
-      %{
-        name: "East Helena",
-        street: "227 Miner's Lane",
-        phone_number: "406-555-0120",
-        city: "Helena, MT",
-        zip: "59602",
-        open: false,
-        hours: "8am - 10pm M-F"
-      },
-      %{
-        name: "Westside Helena",
-        street: "734 Lake Loop",
-        phone_number: "406-555-0130",
-        city: "Helena, MT",
-        zip: "59602",
-        open: true,
-        hours: "8am - 10pm M-F"
-      },
-      %{
-        name: "Downtown Denver",
-        street: "426 Aspen Loop",
-        phone_number: "303-555-0140",
-        city: "Denver, CO",
-        zip: "80204",
-        open: true,
-        hours: "8am - 10pm M-F"
-      },
-      %{
-        name: "Midtown Denver",
-        street: "7 Broncos Parkway",
-        phone_number: "720-555-0150",
-        city: "Denver, CO",
-        zip: "80204",
-        open: false,
-        hours: "8am - 10pm M-F"
-      },
-      %{
-        name: "Denver Stapleton",
-        street: "965 Summit Peak",
-        phone_number: "303-555-0160",
-        city: "Denver, CO",
-        zip: "80204",
-        open: true,
-        hours: "8am - 10pm M-F"
-      },
-      %{
-        name: "Denver West",
-        street: "501 Mountain Lane",
-        phone_number: "720-555-0170",
-        city: "Denver, CO",
-        zip: "80204",
-        open: true,
-        hours: "8am - 10pm M-F"
-      }
-    ]
+    Repo.all(Store)
+  end
+
+  @doc """
+  Gets a single store.
+
+  Raises `Ecto.NoResultsError` if the Store does not exist.
+
+  ## Examples
+
+      iex> get_store!(123)
+      %Store{}
+
+      iex> get_store!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_store!(id), do: Repo.get!(Store, id)
+
+  @doc """
+  Gets a stores by zip
+  """
+  def search_by_zip(zip) when is_binary(zip) do
+    from(s in Store, where: s.zip == ^zip)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a stores by city
+  """
+  def search_by_city(city) when is_binary(city) do
+    from(s in Store, where: s.city == ^city)
+    |> Repo.all()
+  end
+
+  @doc """
+  Creates a store.
+
+  ## Examples
+
+      iex> create_store(%{field: value})
+      {:ok, %Store{}}
+
+      iex> create_store(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_store(attrs \\ %{}) do
+    %Store{}
+    |> Store.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a store.
+
+  ## Examples
+
+      iex> update_store(store, %{field: new_value})
+      {:ok, %Store{}}
+
+      iex> update_store(store, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_store(%Store{} = store, attrs) do
+    store
+    |> Store.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a store.
+
+  ## Examples
+
+      iex> delete_store(store)
+      {:ok, %Store{}}
+
+      iex> delete_store(store)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_store(%Store{} = store) do
+    Repo.delete(store)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking store changes.
+
+  ## Examples
+
+      iex> change_store(store)
+      %Ecto.Changeset{data: %Store{}}
+
+  """
+  def change_store(%Store{} = store, attrs \\ %{}) do
+    Store.changeset(store, attrs)
   end
 end
