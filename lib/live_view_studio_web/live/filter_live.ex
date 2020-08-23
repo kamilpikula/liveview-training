@@ -5,7 +5,7 @@ defmodule LiveViewStudioWeb.FilterLive do
 
   def mount(_params, _session, socket) do
     socket = assigns_default(socket)
-    {:ok, socket, temporary_assigns: [boats: []]}
+    {:ok, socket, temporary_assigns: [boats: Boats.list_boats()]}
   end
 
   def handle_event("filter", %{"type" => type, "prices" => prices}, socket) do
@@ -68,9 +68,9 @@ defmodule LiveViewStudioWeb.FilterLive do
           </div>
         </form>
 
-        <div class="boats">
+        <div class="boats" id="boats">
           <%= for boat <- @boats do %>
-            <div class="card">
+            <div class="card" id="<%= boat.id %>">
               <img src="<%= boat.image %>">
               <div class="content">
                 <div class="model">

@@ -19,7 +19,7 @@ defmodule LiveViewStudioWeb.FlightsLive do
         loading: false
       )
 
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [flights: [], matches: []]}
   end
 
   def handle_event("number-search", %{"number" => number}, socket) do

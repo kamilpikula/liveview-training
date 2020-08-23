@@ -13,7 +13,7 @@ defmodule LiveViewStudioWeb.AutocompleteLive do
         loading: false
       )
 
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [stores: [], matches: []]}
   end
 
   def handle_event("zip-search", %{"zip" => zip}, socket) do

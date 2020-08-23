@@ -11,7 +11,7 @@ defmodule LiveViewStudioWeb.SearchLive do
         loading: false
       )
 
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [stores: []]}
   end
 
   def handle_event("zip-search", %{"zip" => zip}, socket) do
