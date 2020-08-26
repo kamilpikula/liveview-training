@@ -4,15 +4,65 @@ defmodule LiveViewStudioWeb.GitReposLive do
   alias LiveViewStudio.GitRepos
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, repos: GitRepos.list_git_repos())
+    socket = assign_defaults(socket)
 
     {:ok, socket}
+  end
+
+  def handle_event("filter", %{"language" => language, "license" => license}, socket) do
+    params = [language: language, license: license]
+    repos = GitRepos.list_git_repos(params)
+    socket = assign(socket, params ++ [repos: repos])
+
+    {:noreply, socket}
+  end
+
+  def handle_event("clear-all", _, socket) do
+    socket = assign_defaults(socket)
+    {:noreply, socket}
+  end
+
+  defp assign_defaults(socket) do
+    assign(socket,
+      repos: GitRepos.list_git_repos(),
+      language: "",
+      license: ""
+    )
+  end
+
+  defp language_options() do
+    [
+      "All languages": "",
+      "Elixir": "elixir",
+      Ruby: "ruby",
+      Javascript: "javascript"
+    ]
+  end
+
+  defp license_options() do
+    [
+      "All Licenses": "",
+      MIT: "mit",
+      Apache: "apache",
+      BSDL: "bsdl"
+    ]
   end
 
   def render(assigns) do
     ~L"""
     <h1>Trending Git Repos</h1>
     <div id="repos">
+      <form phx-change="filter">
+        <div class="filters">
+          <select name="language">
+            <%= options_for_select(language_options(), @language) %>
+          </select>
+          <select name="license">
+            <%= options_for_select(license_options(), @license) %>
+          </select>
+          <a href="#" phx-click="clear-all">Clear all</a>
+        </div>
+      </form>
       <div class="repos">
         <ul>
           <%= for repo <- @repos do %>
